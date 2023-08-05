@@ -2,10 +2,6 @@
 
 set -euxo pipefail
 
-SLEEP_CONDITION=7200  # Sleep short if delta is greater than this, else sleep long.
-SLEEP_SHORT=5
-SLEEP_LONG=900
-
 # Initialize.
 /setuid.sh
 
