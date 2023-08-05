@@ -1,7 +1,7 @@
 FROM alpine:3.15.0
 LABEL maintainer="Alessandro Colomba https://github.com/acolomba"
 
-RUN apk add --update bash python3 shadow tzdata \
+RUN apk add --update bash python3 shadow tzdata findutils \
     && rm -rf /var/cache/apk/* \
     && useradd -UMr dashcam
 
