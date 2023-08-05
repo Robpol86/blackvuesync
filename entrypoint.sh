@@ -1,8 +1,35 @@
 #!/usr/bin/env bash
 
-set -euo pipefail
+set -euxo pipefail
 
-/setuid.sh \
-&& su -m dashcam /blackvuesync.sh \
-&& [[ -z $RUN_ONCE ]] \
-&& crond -f
+SLEEP_CONDITION=7200  # Sleep short if delta is greater than this, else sleep long.
+SLEEP_SHORT=5
+SLEEP_LONG=900
+
+# Initialize.
+/setuid.sh
+
+# Immediately run on startup.
+su -m dashcam /blackvuesync.sh
+
+# Exit if user requested run once.
+if [[ -n $RUN_ONCE ]]; then
+    exit 1
+fi
+
+# Main loop
+while true; do
+    # Sleep.
+    last_file="$(find /recordings/????-??-?? -type f -printf "%f\n" -name "????????_??????_??.mp4" |sort |tail -1 || true)"
+    last_file_date="${last_file:0:4}-${last_file:4:2}-${last_file:6:2} ${last_file:9:2}:${last_file:11:2}:${last_file:13:2}"
+    last_file_epoch="$(date -d "$last_file_date" +%s)"
+    current_epoch="$(date +%s)"
+    delta_seconds=$(( current_epoch - last_file_epoch ))
+    sleep $(( delta_seconds > SLEEP_CONDITION ? SLEEP_SHORT : SLEEP_LONG ))
+
+    # Wait until camera is reachable.
+    until ping -W1 -c1 -q "$ADDRESS"; do sleep 1; done
+
+    # Run.
+    su -m dashcam /blackvuesync.sh
+done
