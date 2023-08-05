@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -euo pipefail
+
 if [[ $PUID -gt 0 ]]; then
     usermod -o -u "$PUID" dashcam
 fi
