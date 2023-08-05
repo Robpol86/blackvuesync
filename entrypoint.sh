@@ -18,7 +18,7 @@ while true; do
 
     # Get most recent filename on camera.
     awk_program='/Record.[0-9]{8}_[0-9]{6}_.F.mp4/{m=$3} END {print m}'
-    last_file_remote="$(curl -sq http://$ADDRESS/blackvue_vod.cgi |grep Record |sort |awk -F'[/,]' "$awk_program" || true)"
+    last_file_remote="$(curl -sq "http://$ADDRESS/blackvue_vod.cgi" |grep Record |sort |awk -F'[/,]' "$awk_program" || true)"
     last_file_local="/recordings/${last_file_remote:0:4}-${last_file_remote:4:2}-${last_file_remote:6:2}/$last_file_remote"
 
     # Sleep.
