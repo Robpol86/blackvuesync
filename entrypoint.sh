@@ -16,7 +16,7 @@ fi
 # Main loop
 while true; do
     # Sleep.
-    last_file="$(find /recordings/????-??-?? -type f -printf "%f\n" -name "????????_??????_??.mp4" |sort |tail -1 || true)"
+    last_file="$(find /recordings/????-??-?? -name "????????_??????_??.mp4" -type f -printf "%f\n" |sort |tail -1 || true)"
     last_file_date="${last_file:0:4}-${last_file:4:2}-${last_file:6:2} ${last_file:9:2}:${last_file:11:2}:${last_file:13:2}"
     last_file_epoch="$(date -d "$last_file_date" +%s)"
     current_epoch="$(date +%s)"
